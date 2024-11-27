@@ -14,13 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const centrosAtencion = [
         {
             nombre: "Centro de Atención Primaria",
-            horario: { inicio: "08:00", fin: "16:00" },
-            tiempoAtencion: 30, // Minutos
+            horario: { inicio: "08:00", fin: "18:00" },
         },
         {
             nombre: "Centro de Atención Especializada",
-            horario: { inicio: "09:00", fin: "15:00" },
-            tiempoAtencion: 45, 
+            horario: { inicio: "09:00", fin: "17:00" },
         },
     ];
 
@@ -37,22 +35,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * Valida si una hora está dentro del horario de atención de un centro.
-     * @param {string} hora - Hora de la cita (HH:mm).
-     * @param {Object} horario - Horario del centro { inicio: "HH:mm", fin: "HH:mm" }.
-     * @returns {boolean} - Retorna true si la hora está dentro del horario permitido.
+     * Función para poner mayúsculas a cada palabra de un nombre completo
+     * @param {string} string - El texto a convertir (nombre completo)
+     * @returns {string} - El texto con la primera letra de cada palabra en mayúscula y el resto en minúsculas
      */
-    function esHoraValida(hora, horario) {
-        const [horaCita, minutoCita] = hora.split(":").map(Number);
-        const [horaInicio, minutoInicio] = horario.inicio.split(":").map(Number);
-        const [horaFin, minutoFin] = horario.fin.split(":").map(Number);
-
-        const tiempoCita = horaCita * 60 + minutoCita;
-        const tiempoInicio = horaInicio * 60 + minutoInicio;
-        const tiempoFin = horaFin * 60 + minutoFin;
-
-        return tiempoCita >= tiempoInicio && tiempoCita <= tiempoFin;
+    function primeraEnMayuscula(string) {
+        return string
+            .split(" ")  // Divide el string en partes por los espacios
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())  // Capitaliza cada palabra
+            .join(" ");  // Une las partes nuevamente en un solo string
     }
+
 
     formDisponibilidad.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -61,15 +54,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const horario = document.getElementById("horario").value;
         const centroSeleccionado = document.getElementById("centroMedicoDisponibilidad").value;
 
+        const centro = centrosAtencion.find(c => c.nombre === centroSeleccionado);
+
         if (!esFechaValida(fecha)) {
             alert("La fecha debe ser posterior a la fecha actual.");
             return;
         }
 
-        // Buscar el centro de atención seleccionado
-        const centro = centrosAtencion.find(c => c.nombre === centroSeleccionado);
-
-        // Validar si el horario ingresado está dentro del horario del centro de atención
+        // === VALIDAR HORARIO DE ACUERDO AL CENTRO DE ATENCIÓN ===
         const [horaInicioMedico, minutoInicioMedico] = horario.split("-")[0].split(":").map(Number);
         const [horaFinMedico, minutoFinMedico] = horario.split("-")[1].split(":").map(Number);
 
@@ -84,19 +76,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (tiempoInicioMedico < tiempoInicioCentro || tiempoFinMedico > tiempoFinCentro) {
             alert(`El horario del médico no está dentro del horario del centro 
-                (${centro.horario.inicio} - ${centro.horario.fin}).`);
+            (${centro.horario.inicio} - ${centro.horario.fin}).`);
             return;
         }
 
-        // Si pasa la validación, agregar la disponibilidad
-        disponibilidad.push({ medico, fecha, horario });
+        disponibilidad.push({ medico, fecha, horario, centro: centro.nombre });
         listaDisponibilidad.innerHTML += `<li>
-        Médico: ${medico}<br>
-        Fecha: ${fecha}<br>
-        Horario: ${horario}
-    </li>`;
+            Médico: ${primeraEnMayuscula(medico)}<br>
+            Fecha: ${fecha}<br>
+            Horario: ${horario}<br>
+            Centro: ${centro.nombre}
+            </li><br>`;
         formDisponibilidad.reset();
     });
+
 
 
     formCitas.addEventListener("submit", (e) => {
@@ -116,22 +109,28 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Validar si la hora está dentro del horario del centro
-        if (!esHoraValida(hora, centro.horario)) {
-            alert(`La hora seleccionada está fuera del horario permitido (${centro.horario.inicio} 
-                - ${centro.horario.fin}).`);
-            return;
-        }
+        // === VERIFICAR SI LA HORA DE LA CITA ESTÁ DENTRO DEL HORARIO DEL MÉDICO ===
+        const [horaCita, minutoCita] = hora.split(":").map(Number);
+        const medicoDisponibilidad = disponibilidad.find((d) => d.medico === medico && d.fecha === fecha);
 
-        // Verificar si el médico está disponible
-        const estaDisponible = disponibilidad.some((d) => d.medico === medico && d.fecha === fecha);
-
-        if (!estaDisponible) {
+        if (!medicoDisponibilidad) {
             alert(`El médico ${medico} no está disponible el día ${fecha}.`);
             return;
         }
 
-        // Verificar si el paciente ya tiene una cita programada en menos de 7 días
+        const [horaInicioMedico, minutoInicioMedico] = medicoDisponibilidad.horario.split("-")[0].split(":").map(Number);
+        const [horaFinMedico, minutoFinMedico] = medicoDisponibilidad.horario.split("-")[1].split(":").map(Number);
+
+        const tiempoCita = horaCita * 60 + minutoCita;
+        const tiempoInicioMedico = horaInicioMedico * 60 + minutoInicioMedico;
+        const tiempoFinMedico = horaFinMedico * 60 + minutoFinMedico;
+
+        if (tiempoCita < tiempoInicioMedico || tiempoCita > tiempoFinMedico) {
+            alert(`La hora seleccionada está fuera del horario del médico.`);
+            return;
+        }
+
+        // === VERIFICAR CITA DE SEGUIMIENTO > 7 DIAS ===
         const ultimaCita = citas.find((c) => c.paciente === paciente);
         if (
             ultimaCita &&
@@ -139,21 +138,23 @@ document.addEventListener("DOMContentLoaded", () => {
             new Date(fecha) - new Date(ultimaCita.fecha) < 7 * 24 * 60 * 60 * 1000
         ) {
             alert(`No es posible agendar otra cita para este paciente en menos de una semana, 
-                salvo que sea una urgencia.`);
+            salvo que sea una urgencia.`);
             return;
         }
 
         citas.push({ paciente, motivo, tipo, medico, fecha, hora, centro: centro.nombre });
         listaCitas.innerHTML += `<li>
-            Cita (${tipo})<br>
-            Paciente: ${paciente}<br>
-            Médico: ${medico}<br>
+            Tipo de Cita — <strong>${primeraEnMayuscula(tipo)}</strong><br>
+            Paciente: ${primeraEnMayuscula(paciente)}<br>
+            Médico: ${primeraEnMayuscula(medico)}<br>
             Fecha: ${fecha}<br>
             Hora: ${hora}<br>
             Centro: ${centro.nombre}
-        </li>`;
+        </li><br>`;
+
         formCitas.reset();
     });
+
 
 
     formCumplimiento.addEventListener("submit", (e) => {
@@ -164,10 +165,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         historiaClinica.push({ paciente, motivo, tratamiento });
         historiaClinicaLista.innerHTML += `<li>
-        Paciente: ${paciente}<br>
+        Paciente: ${primeraEnMayuscula(paciente)}<br>
         Motivo: ${motivo}<br>
         Tratamiento: ${tratamiento}
-    </li>`;
+    </li><br>`;
         formCumplimiento.reset();
     });
 });
