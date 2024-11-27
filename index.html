@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Citas Médicas</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Gestión de Citas Médicas</h1>
+    </header>
+    <main>
+        <section id="registro-disponibilidad">
+            <select id="centroMedicoDisponibilidad">
+                <option value="Centro B">Centro de Atención Primaria 08:00 - 16:00</option>
+                <option value="Centro A">Centro de Atención Especializada 09:00 - 15:00</option>
+            </select>
+
+            <h2>Registro de Disponibilidad</h2>
+            <form id="formDisponibilidad">
+                    <label for="medico">Nombre del Médico:</label>
+                    <input type="text" id="medico" required>
+                    <label for="fecha">Fecha Disponible:</label>
+                    <input type="date" id="fecha" required>                                   
+                    <label for="horario">Horario:</label>
+                    <input type="text" id="horario" placeholder="Ejemplo: 08:00-14:00" required>
+                    <button type="submit">Registrar Disponibilidad</button>
+            </form>
+            <ul id="listaDisponibilidad"></ul>
+        </section>
+
+        <section id="registro-citas">      
+            <select id="centroMedicoCitas">
+                <option value="Centro B">Centro de Atención Primaria 08:00 - 16:00</option>
+                <option value="Centro A">Centro de Atención Especializada 09:00 - 15:00</option>
+            </select>
+
+            <h2>Registro de Citas</h2>
+            <form id="formCitas">
+                <label for="paciente">Nombre del Paciente:</label>
+                <input type="text" id="paciente" required>
+                <label for="motivo">Motivo:</label>
+                <input type="text" id="motivo" required>
+                <label for="tipo">Tipo de Solicitud:</label>
+                <select id="tipo" required>
+                    <option value="normal">Normal</option>
+                    <option value="prioritaria">Prioritaria</option>
+                    <option value="urgencia">Urgencia</option>
+                </select>
+                <label for="medicoCita">Médico:</label>
+                <input type="text" id="medicoCita" required>
+                <label for="fechaCita">Fecha de la Cita:</label>
+                <input type="date" id="fechaCita" required>
+                <label for="horaCita">Fecha de la Cita:</label>
+                <input type="time" id="horaCita" required>
+                <button type="submit">Registrar Cita</button>
+            </form>
+            <ul id="listaCitas"></ul>
+        </section>
+
+        <section id="registro-cumplimiento">
+            <h2>Registro de Cumplimiento e Historia Clínica</h2>
+            <form id="formCumplimiento">
+                <label for="pacienteCumplimiento">Nombre del Paciente:</label>
+                <input type="text" id="pacienteCumplimiento" required>
+                <label for="motivoCumplimiento">Motivo:</label>
+                <input type="text" id="motivoCumplimiento" required>
+                <label for="tratamiento">Tratamiento:</label>
+                <textarea id="tratamiento" required></textarea>
+                <button type="submit">Registrar Cumplimiento</button>
+            </form>
+            <ul id="historiaClinica"></ul>
+        </section>
+    </main>
+    <script src="./app.js"></script>
+</body>
+
+</html>
