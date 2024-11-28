@@ -11,51 +11,67 @@
 <body>
     <header>
         <h1>Gestión de Citas Médicas</h1>
+        
     </header>
     <main>
+        <p class="alert"></p>
         <section id="registro-disponibilidad">
+            <h2>Registro de Disponibilidad</h2>
             <select id="centroMedicoDisponibilidad">
                 <option value="Centro de Atención Primaria">Centro de Atención Primaria 08:00 - 18:00</option>
                 <option value="Centro de Atención Especializada">Centro de Atención Especializada 09:00 - 17:00</option>
             </select>
 
-            <h2>Registro de Disponibilidad</h2>
             <form id="formDisponibilidad">
-                    <label for="medico">Nombre del Médico:</label>
-                    <input type="text" id="medico" required>
-                    <label for="fecha">Fecha Disponible:</label>
-                    <input type="date" id="fecha" required>                                   
-                    <label for="horario">Horario:</label>
-                    <input type="text" id="horario" placeholder="Ejemplo: 08:00-14:00" required>
+                    <label for="medico">
+                        Nombre del Médico:
+                        <input type="text" id="medico" required>
+                    </label>
+                    <label for="fecha">
+                        Fecha Disponible:
+                        <input type="date" id="fecha" required>                                   
+                    </label>
+                    <label for="horario">
+                        Horario:
+                        <input type="text" id="horario" placeholder="Ejemplo: 08:00-14:00" required>
+                    </label>
                     <button type="submit">Registrar Disponibilidad</button>
             </form>
             <ul id="listaDisponibilidad"></ul>
         </section>
 
-        <section id="registro-citas">      
+        <section id="registro-citas">    
+            <h2>Registro de Citas</h2>
             <select id="centroMedicoCitas">
                 <option value="Centro de Atención Primaria">Centro de Atención Primaria 08:00 - 18:00</option>
                 <option value="Centro de Atención Especializada">Centro de Atención Especializada 09:00 - 17:00</option>
             </select>
 
-            <h2>Registro de Citas</h2>
             <form id="formCitas">
-                <label for="paciente">Nombre del Paciente:</label>
-                <input type="text" id="paciente" required>
-                <label for="motivo">Motivo:</label>
-                <input type="text" id="motivo" required>
-                <label for="tipo">Tipo de Solicitud:</label>
-                <select id="tipo" required>
-                    <option value="normal">Normal</option>
-                    <option value="prioritaria">Prioritaria</option>
-                    <option value="urgencia">Urgencia</option>
-                </select>
-                <label for="medicoCita">Médico:</label>
-                <input type="text" id="medicoCita" required>
-                <label for="fechaCita">Fecha de la Cita:</label>
-                <input type="date" id="fechaCita" required>
-                <label for="horaCita">Fecha de la Cita:</label>
-                <input type="time" id="horaCita" required>
+                <label for="paciente">
+                    Nombre del Paciente:
+                    <input type="text" id="paciente" required>
+                </label>
+                <label for="tipo">
+                    Tipo de Solicitud:
+                    <select id="tipo" required>
+                        <option value="normal">Normal</option>
+                        <option value="prioritaria">Prioritaria</option>
+                        <option value="urgencia">Urgencia</option>
+                    </select>
+                </label>
+                <label for="medicoCita">
+                    Médico:
+                    <input type="text" id="medicoCita" required>
+                </label>
+                <label for="fechaCita">
+                    Fecha de la Cita:
+                    <input type="date" id="fechaCita" required>
+                </label>
+                <label for="horaCita">
+                    Hora de la Cita:
+                    <input type="time" id="horaCita" required>
+                </label>
                 <button type="submit">Registrar Cita</button>
             </form>
             <ul id="listaCitas"></ul>
@@ -64,17 +80,28 @@
         <section id="registro-cumplimiento">
             <h2>Registro de Cumplimiento e Historia Clínica</h2>
             <form id="formCumplimiento">
-                <label for="pacienteCumplimiento">Nombre del Paciente:</label>
-                <input type="text" id="pacienteCumplimiento" required>
-                <label for="motivoCumplimiento">Motivo:</label>
-                <input type="text" id="motivoCumplimiento" required>
-                <label for="tratamiento">Tratamiento:</label>
-                <textarea id="tratamiento" required></textarea>
+                <label for="pacienteCumplimiento">
+                    Nombre del Paciente:
+                    <input type="text" id="pacienteCumplimiento" required>
+                </label>
+                <label for="motivoCumplimiento">
+                    Motivo de consulta:
+                    <input type="text" id="motivoCumplimiento" required>
+                </label>
+                <label for="tratamiento">
+                    Tratamiento:
+                    <textarea id="tratamiento" required></textarea>
+                </label>
                 <button type="submit">Registrar Cumplimiento</button>
             </form>
-            <ul id="historiaClinica"></ul>
+            <ul id="cumplimientoList"></ul>
         </section>
     </main>
+    <script src="./utils/funciones.js"></script>
+    <script src="./scripts/centro.js"></script>
+    <script src="./scripts/disponibilidad.js"></script>
+    <script src="./scripts/cita.js"></script>
+    <script src="./scripts/cumplimiento.js"></script>
     <script src="./app.js"></script>
 </body>
 

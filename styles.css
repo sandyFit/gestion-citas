@@ -11,16 +11,18 @@ header {
     color: white;
     text-align: center;
     padding: 1em 0;
+
 }
 
 main {
     padding: 2rem 16rem;
+    position: relative;
 }
 
 section {
-    margin-bottom: 20px;
+    margin-bottom: 1.5em;
     background: white;
-    padding: 20px;
+    padding: 3rem 4rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -28,7 +30,8 @@ section {
 form {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 1.2rem;
+    padding: 1.5rem 2rem;
 }
 
 input,
@@ -36,8 +39,16 @@ select,
 textarea {
     padding: .3rem;
     font-size: 1rem;
-
 }
+
+label {
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+    font-size: .88rem;
+    font-weight: 600;
+}
+
 
 button {
     margin-top: 0.5rem;
@@ -59,4 +70,15 @@ button:hover {
 ul {
     list-style: none;
     padding: 0;
+}
+
+.alert {
+    font-size: 1rem;
+    font-weight: 400;
+    background-color: rgb(155, 209, 191);
+    color: #0f766e;
+    padding: 1rem;
+    position: fixed;
+    top: 8rem;
+    display: none;
 }
