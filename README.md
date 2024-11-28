@@ -19,6 +19,7 @@ La clase `Centro` representa un centro médico donde se gestionan las citas y la
 #### **Atributos:**
 * nombre: El nombre del centro médico.
 * horarioAtencion: Un objeto que indica las horas de apertura y cierre del centro.
+
 Existen dos clases hijas: **Centro de Atención Primaria** y **Centro de Atención Especializada**. Estas clases heredan los atributos de la clase `Centro` y extienden sus funcionalidades según las características específicas de cada tipo de centro.
 
 ---
