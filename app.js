@@ -1,46 +1,49 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     const utils = window.utils;
 
-    // Crear centros de atención
     const centrosAtencion = [
         new CentroPrimaria("Centro de Atención Primaria"),
         new CentroEspecializada("Centro de Atención Especializada"),
     ];
 
-    // Arreglos para almacenar las entidades
-    const disponibilidad = [];
-    const citas = [];
-    const cumplimiento = [];
-
     const formDisponibilidad = document.getElementById("formDisponibilidad");
     const formCitas = document.getElementById("formCitas");
     const formCumplimiento = document.getElementById("formCumplimiento");
+
+    const disponibilidad = [];
+    const citas = [];
+    const cumplimiento = [];
 
     const listaDisponibilidad = document.getElementById("listaDisponibilidad");
     const listaCitas = document.getElementById("listaCitas");
     const listaCumplimiento = document.getElementById("cumplimientoList");
 
-    // Manejo de formularios
+    // Parse function update
+    function parseHorario(centroNombre) {
+        return centrosAtencion.find(c => c.getNombre() === centroNombre)
+            || new Centro("Centro Desconocido", { inicio: "00:00", fin: "00:00" });
+    }
 
+    // Manejo del formulario de disponibilidad
     formDisponibilidad.addEventListener("submit", (e) => {
-        e.preventDefault();
+        e.preventDefault();  
         const medico = document.getElementById("medico").value;
         const fecha = document.getElementById("fecha").value;
         const horario = document.getElementById("horario").value;
+
         const centroSeleccionado = document.getElementById("centroMedicoDisponibilidad").value;
+        console.log("Centro seleccionado:", centroSeleccionado);
 
-        // Buscar el centro seleccionado
-        const centro = centrosAtencion.find(c => c.nombre === centroSeleccionado);
+        const centro = centrosAtencion.find(c => c.getNombre() === centroSeleccionado);
+        console.log("Centro encontrado:", centro);
 
-        if (!centro || !centro.horario) {
-            console.error("Centro encontrado:", centro); // Muestra el centro para depuración
-            utils.displayAlert("Centro médico no válido o no tiene horario definido.");
+        if (!centro) {
+            console.log("Centro no encontrado");
             return;
         }
 
-
         const disponibilidadObj = new Disponibilidad(medico, fecha, horario, centro);
+        console.log("Disponibilidad creada:", disponibilidadObj);
 
         if (!disponibilidadObj.esFechaValida()) {
             utils.displayAlert("La fecha debe ser posterior a la fecha actual.");
@@ -58,12 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
             <strong>Médico:</strong> ${utils.primeraEnMayuscula(medico)}<br>
             <strong>Fecha:</strong> ${fecha}<br>
             <strong>Horario:</strong> ${horario}<br>
-            <strong>Centro:</strong> ${centro.nombre}
+            <strong>Centro:</strong> ${centro.getNombre()}
         </li><br>`;
 
         formDisponibilidad.reset();
     });
 
+    // Manejo del formulario de citas
     formCitas.addEventListener("submit", (e) => {
         e.preventDefault();
         const paciente = document.getElementById("paciente").value;
@@ -74,9 +78,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const centroSeleccionado = document.getElementById("centroMedicoCitas").value;
 
         // Buscar el centro seleccionado
-        const centro = centrosAtencion.find((c) => c.nombre === centroSeleccionado);
+        const centro = centrosAtencion.find(c => c.getNombre() === centroSeleccionado);
 
-        const citaObj = new Cita(paciente, tipo, medico, fecha, hora, centro.nombre);
+        const citaObj = new Cita(paciente, tipo, medico, fecha, hora, centro.getNombre());
+        console.log("cita creada:", citaObj);
 
         if (!citaObj.validarFechaCita()) {
             utils.displayAlert("La fecha debe ser posterior a la fecha actual.");
@@ -89,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const ultimaCita = citas.find((c) => c.paciente === paciente);
+        const ultimaCita = citas.find((c) => c.getPaciente() === paciente);
         if (citaObj.esCitaDeSeguimiento(ultimaCita)) {
             utils.displayAlert("No es posible agendar otra cita para este paciente en menos de una semana, salvo que sea una urgencia.");
             return;
@@ -103,14 +108,15 @@ document.addEventListener("DOMContentLoaded", () => {
             <strong>Médico:</strong> ${utils.primeraEnMayuscula(medico)}<br>
             <strong>Fecha:</strong> ${fecha}<br>
             <strong>Hora:</strong> ${hora}<br>
-            <strong>Centro:</strong> ${centro.nombre}
+            <strong>Centro:</strong> ${centro.getNombre()}
         </li><br>`;
 
         formCitas.reset();
     });
 
+    // Manejo del formulario de cumplimiento
     formCumplimiento.addEventListener("submit", (e) => {
-        e.preventDefault();
+        e.preventDefault();  // Cambié e por event
         const paciente = document.getElementById("pacienteCumplimiento").value;
         const motivo = document.getElementById("motivoCumplimiento").value;
         const tratamiento = document.getElementById("tratamiento").value;
